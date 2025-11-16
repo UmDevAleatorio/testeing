@@ -17,10 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      {/* ADICIONAMOS AS CLASSES DO TAILWIND AQUI:
-        - bg-white: Fundo branco
-        - text-black: Texto preto
-      */}
+      {/* ADICIONAMOS AS CLASSES DO TAILWIND AO BODY */}
       <body className="bg-white text-black">
         <StyledComponentsRegistry>
           <AuthProvider>
