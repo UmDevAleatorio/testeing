@@ -5,10 +5,8 @@ import styled from 'styled-components'
 import { colors } from '@/styles/colors'
 import { makeProductUseCases } from '@/core/factories/makeProductUseCases'
 import { Product } from '@/core/domain/entities/Product'
-// 1. Importe o formulário que acabámos de criar
 import { ProductForm } from '@/components/ProductForm'
 
-// --- Estilos (sem alterações) ---
 const SAdminPage = styled.div`
   padding: 2rem 3rem;
   background-color: ${colors.mediumGray};
@@ -103,11 +101,8 @@ const STable = styled.table`
   }
 `
 
-// --- Componente da Página ---
-
 export default function AdminProdutosPage() {
   const [products, setProducts] = useState<Product[]>([])
-  // 2. Crie um estado para controlar se o pop-up (Dialog) está aberto
   const [isFormOpen, setIsFormOpen] = useState(false)
 
   const { findAllProducts } = makeProductUseCases()
@@ -126,22 +121,21 @@ export default function AdminProdutosPage() {
     loadProducts()
   }, [])
 
-  // 3. Crie a função que será chamada pelo formulário quando um produto for salvo
   const handleSaveSuccess = () => {
-    loadProducts() // Simplesmente recarrega a lista de produtos
+    loadProducts()
   }
 
   return (
     <SAdminPage>
       <SAdminHeader>
         <h1>Gerenciar Produtos</h1>
-        {/* 4. Atualize o botão para abrir o pop-up */}
+        {}
         <button onClick={() => setIsFormOpen(true)}>Adicionar Produto</button>
       </SAdminHeader>
 
-      <STable>{/* ... (o seu código da tabela continua igual) ... */}</STable>
+      <STable>{}</STable>
 
-      {/* 5. Adicione o componente do formulário à página */}
+      {}
       <ProductForm
         open={isFormOpen}
         onOpenChange={setIsFormOpen}
