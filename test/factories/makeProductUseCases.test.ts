@@ -1,4 +1,4 @@
-import { makeProductUseCases } from '@factories/makeProductUseCases';
+import { makeProductUseCases } from '@/core/factories/makeProductUseCases';
 
 describe('Factory: makeProductUseCases', () => {
     it('should create and return all product related use cases', () => {

@@ -1,32 +1,49 @@
 'use client'
-import Image, { StaticImageData } from "next/image";
-import Link from "next/link";
+import Image from "next/image";
 import { SProductCard } from "./styles";
-import addIcon from '@/assets/add.svg'; 
+import cartIcon from "@/assets/carticon.svg";
+import { Product } from "@/core/domain/entities/Product"; 
+import { useRouter } from "next/navigation";
 
-type ProductCardProps = {
-    product: {
-        id: string;
-        name: string;
-        price: string;
-        imageUrl: StaticImageData;
-    }
+interface ProductCardProps {
+    product: Product; 
 }
 
 export function ProductCard({ product }: ProductCardProps) {
+    const router = useRouter();
+
+    const formatPrice = (value: number) => {
+        return value.toLocaleString('pt-BR', {
+            style: 'currency',
+            currency: 'BRL',
+        });
+    };
+
     return (
         <SProductCard>
             <figure>
-                <Image src={product.imageUrl} alt={product.name} width={180} height={180} />
+                {}
+                <Image 
+                    src={product.photo.url} 
+                    alt={product.name.value} 
+                    width={180} 
+                    height={180} 
+                />
                 <figcaption>
-                    <span>{product.price}</span>
+                    {}
+                    <span>{formatPrice(product.price.value)}</span>
                     <button title="Adicionar ao carrinho">
-                        {/* MUDANÇA AQUI: Usando a variável correta */}
-                        <Image src={addIcon} alt="Adicionar ao Carrinho" width={40} height={40} />
+                        <Image src={cartIcon} alt="Adicionar ao Carrinho" width={40} height={40} />
                     </button>
                 </figcaption>
             </figure>
-            <Link href={`/produtos/${product.id}`}>Ver detalhes</Link>
+
+            {}
+            <h5>{product.name.value}</h5>
+
+            <a onClick={() => router.push(`/produtos/${product.id}`)}>
+                Ver detalhes
+            </a>
         </SProductCard>
-    )
+    );
 }

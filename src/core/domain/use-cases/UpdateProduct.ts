@@ -1,31 +1,42 @@
-import { Product } from "../entities/Product";
-import { IProductRepository } from "../repositories/IProductRepository";
-import { Name, Price, Photo } from "../value-objects";
+import { Product } from '../entities/Product';
+import { IProductRepository } from '../repositories/IProductRepository';
+import { Name, Price, Photo } from '../value-objects';
 
 export class UpdateProduct {
-    constructor(private readonly productRepository: IProductRepository) {}
+    constructor(private readonly productRepository: IProductRepository) { }
 
-    async execute(params: { id: string; name?: string; price?: number; stock?: number; }): Promise<Product> {
-        const { id, name, price, stock } = params;
+    async execute(params: {
+        id: string;
+        name?: string;
+        price?: number;
+        stock?: number;
+        photoUrl?: string; 
+    }): Promise<Product> {
+        const { id, name, price, stock, photoUrl } = params; 
 
-        const existingProduct = await this.productRepository.findById(id);
-        if (!existingProduct) {
-            throw new Error("Produto não encontrado.");
+        const product = await this.productRepository.findById(id);
+
+        if (!product) {
+            throw new Error('Product not found');
         }
 
-        const updatedName = name ? Name.create(name) : existingProduct.name;
-        const updatedPrice = price !== undefined ? Price.create(price) : existingProduct.price;
-        const updatedStock = stock !== undefined ? stock : existingProduct.stock;
+        const newName = name ? Name.create(name) : product.name;
+        const newPrice = price ? Price.create(price) : product.price;
+        const newStock = stock ?? product.stock; 
+        const newPhoto = photoUrl ? Photo.create(photoUrl) : product.photo; 
 
         const updatedProduct = Product.create(
-            existingProduct.id,
-            updatedName,
-            updatedPrice,
-            existingProduct.photo, 
-            updatedStock
+            product.id,
+            newName,
+            newPrice,
+            newPhoto, 
+            newStock,
+            product.userId, 
+            product.user
         );
-        
+
         await this.productRepository.update(updatedProduct);
+
         return updatedProduct;
     }
 }

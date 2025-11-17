@@ -51,6 +51,15 @@ export const SProductCard = styled.article`
         }
     }
 
+    h5 {
+        color: ${colors.primaryDark};
+        font-weight: 600;
+        font-size: 1.1rem;
+        text-align: center;
+        margin-top: 0.5rem;
+        flex-grow: 1; 
+    }
+
     a {
         text-align: center;
         text-decoration: none;

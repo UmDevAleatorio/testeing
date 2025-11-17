@@ -1,133 +1,69 @@
 'use client'
+import { useState } from "react";
+import { DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
-import { useState, FormEvent } from 'react'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { makeProductUseCases } from '@/core/factories/makeProductUseCases'
-import { CreateProduct } from '@/core/domain/use-cases/CreateProduct'
-
-type ProductFormProps = {
-  open: boolean 
-  onOpenChange: (open: boolean) => void
-  onSaveSuccess: () => void 
+export interface ProductInterface {
+  id: string;
+  name: string;
+  price: number;
+  stock: number;
+  photo: string;
 }
 
-export function ProductForm({
-  open,
-  onOpenChange,
-  onSaveSuccess,
-}: ProductFormProps) {
-  const [name, setName] = useState('')
-  const [price, setPrice] = useState('')
-  const [stock, setStock] = useState('')
-  const [photoUrl, setPhotoUrl] = useState('')
+interface ProductFormProps {
+  product: ProductInterface | null; // Use o tipo correto
+  onSave: (data: Omit<ProductInterface, 'id'> & { id: string }) => void; // Use o tipo correto
+  onCancel: () => void;
+}
 
-  const { createProduct } = makeProductUseCases()
+export function ProductForm({ product, onSave, onCancel }: ProductFormProps) {
+  const [formData, setFormData] = useState({
+    id: product?.id || '',
+    name: product?.name || '',
+    price: product?.price || 0,
+    stock: product?.stock || 0,
+    photo: product?.photo || ''
+  });
 
-  const handleSubmit = async (event: FormEvent) => {
-    event.preventDefault()
-
-    try {
-      if (!name || !price || !stock || !photoUrl) {
-        alert('Por favor, preencha todos os campos.')
-        return
-      }
-
-      await createProduct.execute({
-        name,
-        price: parseFloat(price),
-        stock: parseInt(stock), 
-        photoUrl,
-      })
-
-      alert('Produto salvo com sucesso!')
-      onSaveSuccess() 
-      onOpenChange(false) 
-      
-      setName('')
-      setPrice('')
-      setStock('')
-      setPhotoUrl('')
-
-    } catch (error: any) {
-      alert(`Erro ao salvar produto: ${error.message}`)
-    }
-  }
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSave(formData);
+  };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Adicionar Novo Produto</DialogTitle>
-          <DialogDescription>
-            Preencha as informações do novo produto.
-          </DialogDescription>
-        </DialogHeader>
-
-        <form id="product-form" onSubmit={handleSubmit} className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              Nome
-            </Label>
-            <Input
-              id="name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="col-span-3"
-            />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="price" className="text-right">
-              Preço (R$)
-            </Label>
-            <Input
-              id="price"
-              type="number"
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-              className="col-span-3"
-            />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="stock" className="text-right">
-              Estoque
-            </Label>
-            <Input
-              id="stock"
-              type="number"
-              value={stock}
-              onChange={(e) => setStock(e.target.value)}
-              className="col-span-3"
-            />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="photoUrl" className="text-right">
-              URL da Foto
-            </Label>
-            <Input
-              id="photoUrl"
-              value={photoUrl}
-              onChange={(e) => setPhotoUrl(e.target.value)}
-              className="col-span-3"
-            />
-          </div>
-        </form>
-
-        <DialogFooter>
-          <Button type="submit" form="product-form">
-            Salvar
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  )
+    <form onSubmit={handleSubmit}>
+      <DialogHeader>
+        {}
+        <DialogTitle>{product ? 'Editar Produto' : 'Adicionar Produto'}</DialogTitle>
+        <DialogDescription>
+          {product ? 'Altere os detalhes do seu produto.' : 'Adicione um novo produto.'}
+        </DialogDescription>
+      </DialogHeader>
+      <div className="grid gap-4 py-4">
+        <div className="grid grid-cols-4 items-center gap-4">
+          <Label htmlFor="name" className="text-right">Nome</Label>
+          <Input id="name" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="col-span-3" required />
+        </div>
+        <div className="grid grid-cols-4 items-center gap-4">
+          <Label htmlFor="price" className="text-right">Preço</Label>
+          <Input id="price" type="number" value={formData.price} onChange={(e) => setFormData({ ...formData, price: Number(e.target.value) })} className="col-span-3" required />
+        </div>
+        <div className="grid grid-cols-4 items-center gap-4">
+          <Label htmlFor="stock" className="text-right">Estoque</Label>
+          <Input id="stock" type="number" value={formData.stock} onChange={(e) => setFormData({ ...formData, stock: Number(e.target.value) })} className="col-span-3" required />
+        </div>
+        <div className="grid grid-cols-4 items-center gap-4">
+          <Label htmlFor="photo" className="text-right">Imagem</Label>
+          <Input id="photo" type="url" value={formData.photo} onChange={(e) => setFormData({ ...formData, photo: e.target.value })} className="col-span-3" required />
+        </div>
+      </div>
+      <DialogFooter>
+        <Button type="button" variant="outline" onClick={onCancel}>Cancelar</Button>
+        <Button type="submit">Salvar</Button>
+      </DialogFooter>
+    </form>
+  );
 }

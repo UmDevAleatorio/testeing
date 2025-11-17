@@ -1,4 +1,4 @@
-import { makeOrderUseCases } from '@factories/makeOrderUseCases';
+import { makeOrderUseCases } from '@/core/factories/makeOrderUseCases';
 
 describe('Factory: makeOrderUseCases', () => {
     it('should create and return all order related use cases', () => {

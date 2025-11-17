@@ -1,22 +1,30 @@
-import { Product } from "../entities/Product";
-import { IProductRepository } from "../repositories/IProductRepository";
-import { Name, Price, Photo } from "../value-objects";
+import { Product } from '../entities/Product';
+import { IProductRepository } from '../repositories/IProductRepository';
+import { Name, Price, Photo } from '../value-objects';
 
 export class CreateProduct {
-    constructor(private readonly productRepository: IProductRepository) {}
+    constructor(private readonly productRepository: IProductRepository) { }
 
-    async execute(params: { name: string; price: number; photoUrl: string; stock: number; }): Promise<Product> {
-        const { name, price, photoUrl, stock } = params;
+    async execute(params: {
+        name: string;
+        price: number;
+        photoUrl: string;
+        stock: number;
+        userId: string; 
+    }): Promise<Product> {
+        const { name, price, photoUrl, stock, userId } = params; 
 
         const product = Product.create(
-            Math.random().toString(36).substring(7),
+            Math.random().toString(),
             Name.create(name),
             Price.create(price),
             Photo.create(photoUrl),
-            stock
+            stock,
+            userId 
         );
 
         await this.productRepository.save(product);
+
         return product;
     }
 }
